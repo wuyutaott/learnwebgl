@@ -33,5 +33,7 @@ function main() {
         console.log(err);
     }
 
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.POINTS, 0, 1);
 }
