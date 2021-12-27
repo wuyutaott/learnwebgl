@@ -18,7 +18,7 @@ function main() {
     gl.shaderSource(vshader, VS);
     gl.compileShader(vshader);
     var fshader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fshader, VS);
+    gl.shaderSource(fshader, FS);
     gl.compileShader(fshader);
 
     var program = gl.createProgram();
@@ -26,6 +26,12 @@ function main() {
     gl.attachShader(program, fshader);
     gl.linkProgram(program);
     gl.useProgram(program);
+
+    var pp = gl.getProgramParameter(program, gl.LINK_STATUS);
+    if (!pp) {
+        var err = gl.getProgramInfoLog(program);
+        console.log(err);
+    }
 
     gl.drawArrays(gl.POINTS, 0, 1);
 }
