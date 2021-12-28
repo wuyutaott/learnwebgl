@@ -11,8 +11,10 @@ function main() {
                     gl_Position = a_Position;
                     gl_PointSize = 10.0;
                 }`;
-    const FS = `void main() {
-                    gl_FragColor = vec4(1, 0, 0, 1);
+    const FS = `precision mediump float;
+                uniform vec4 u_FragColor;
+                void main() {
+                    gl_FragColor = u_FragColor;
                 }`;
 
     var vshader = gl.createShader(gl.VERTEX_SHADER);
@@ -22,6 +24,13 @@ function main() {
     var fshader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fshader, FS);
     gl.compileShader(fshader);
+
+    var sp = gl.getShaderParameter(fshader, gl.COMPILE_STATUS);
+    if (!sp) {
+        var err = gl.getShaderInfoLog(fshader);
+        console.log(err);
+        return;
+    }
 
     var program = gl.createProgram();
     gl.attachShader(program, vshader);
@@ -33,6 +42,7 @@ function main() {
     gl.clear(gl.COLOR_BUFFER_BIT);    
 
     var a_Position = gl.getAttribLocation(program, 'a_Position');
+    var u_FragColor = gl.getUniformLocation(program, 'u_FragColor');
 
     var points = [];
     canvas.onmousedown = (ev) => {
@@ -44,9 +54,22 @@ function main() {
         points.push([x, y]);
 
         gl.clear(gl.COLOR_BUFFER_BIT);
-        
+
         for (var i = 0; i < points.length; i++) {
             var p = points[i];
+            if (p[0] < 0 && p[1] < 0) {
+                gl.uniform4f(u_FragColor, 0, 1, 0, 1);
+            }
+            else if (p[0] >= 0 && p[1] >= 0) {
+                gl.uniform4f(u_FragColor, 1, 0, 0, 1);
+            }
+            else if (p[0] < 0 && p[1] >= 0) {
+                gl.uniform4f(u_FragColor, 0, 0, 1, 1);
+            }
+            else {
+                gl.uniform4f(u_FragColor, 0.5, 0.5, 0.5, 1);
+            }
+
             gl.vertexAttrib3f(a_Position, p[0], p[1], 0);
             gl.drawArrays(gl.POINTS, 0, 1);
         }
