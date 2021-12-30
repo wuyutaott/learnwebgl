@@ -25,10 +25,10 @@ function main() {
     gl.drawArrays(gl.POINTS, 0, num);
 }
 function createBuffer(gl, program) {
-    var bufferData = new Int32Array([0, 0.5, -0.5, -0.5, 0.5, -0.5]);
+    var data = new Float32Array([0, 0.5, -0.5, -0.5, 0.5, -0.5]);
     var buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
     var a_Position = gl.getAttribLocation(program, 'a_Position');
     gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(a_Position);

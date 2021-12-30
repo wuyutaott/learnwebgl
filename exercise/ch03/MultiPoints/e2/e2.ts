@@ -39,7 +39,7 @@ function main() {
 }
 
 function createBuffer(gl: WebGLRenderingContext, program: WebGLProgram): number {
-    let data = new Int32Array([0, 0.5, -0.5, -0.5, 0.5, -0.5]);
+    let data = new Float32Array([0, 0.5, -0.5, -0.5, 0.5, -0.5]);
     let buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
