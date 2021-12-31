@@ -19,6 +19,9 @@ function main() {
     gl.attachShader(program, fshader);
     gl.linkProgram(program);
     gl.useProgram(program);
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    var a_Position = gl.getAttribLocation(program, 'a_Position');
     var points = [];
     canvas.onmousedown = function (ev) {
         var rect = canvas.getBoundingClientRect();
@@ -28,17 +31,14 @@ function main() {
         var y = (rect.height / 2 - cy) / (rect.height / 2);
         points.push(x);
         points.push(y);
-        draw(points, gl, program);
+        draw(points, gl, a_Position);
     };
 }
-function draw(points, gl, program) {
+function draw(points, gl, index) {
     gl.clear(gl.COLOR_BUFFER_BIT);
     var data = new Float32Array(points);
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    var a_Position = gl.getAttribLocation(program, 'a_Position');
-    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_Position);
+    gl.vertexAttribPointer(index, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(index);
     gl.drawArrays(gl.TRIANGLES, 0, points.length / 2);
 }

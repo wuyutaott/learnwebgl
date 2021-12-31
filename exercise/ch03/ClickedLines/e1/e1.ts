@@ -32,6 +32,11 @@ function main() {
     gl.linkProgram(program);
     gl.useProgram(program);
 
+    let buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+    let a_Position = gl.getAttribLocation(program, 'a_Position');
+
     let points = [];
     canvas.onmousedown = (ev: MouseEvent) => {
         let rect = canvas.getBoundingClientRect();        
@@ -41,20 +46,17 @@ function main() {
         let y = (rect.height / 2 - cy) / (rect.height / 2);
         points.push(x);
         points.push(y);
-        draw(points, gl, program);        
+        draw(points, gl, a_Position); 
     };  
 }
 
-function draw(points: number[], gl: WebGLRenderingContext, program: WebGLProgram) {    
+function draw(points: number[], gl: WebGLRenderingContext, index: GLint) {    
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    let data = new Float32Array(points);
-    let buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    let data = new Float32Array(points);    
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    let a_Position = gl.getAttribLocation(program, 'a_Position');
-    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_Position);
+    gl.vertexAttribPointer(index, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(index);
 
     gl.drawArrays(gl.TRIANGLES, 0, points.length / 2);    
 }
