@@ -11,6 +11,7 @@ function main() {
     const VS = `attribute vec4 a_Position;
                 void main() {
                     gl_Position = a_Position;
+                    gl_PointSize = 5.0;
                 }`;
 
     const FS = `void main() {
@@ -38,17 +39,22 @@ function main() {
         let cy = ev.clientY - rect.y;
         let x = (cx - rect.width / 2) / (rect.width / 2);
         let y = (rect.height / 2 - cy) / (rect.height / 2);
-        points.push([x, y]);
+        points.push(x);
+        points.push(y);
         draw(points, gl, program);        
-    };
+    };  
 }
 
-function draw(points: any[], gl: WebGLRenderingContext, program: WebGLProgram) {
+function draw(points: number[], gl: WebGLRenderingContext, program: WebGLProgram) {    
     gl.clear(gl.COLOR_BUFFER_BIT);
+
+    let data = new Float32Array(points);
+    let buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
     let a_Position = gl.getAttribLocation(program, 'a_Position');
-    for (let i = 0; i < points.length; i++) {
-        let p = points[i];
-        gl.vertexAttrib3f(a_Position, p[0], p[1], 0);
-        gl.drawArrays(gl.POINTS, 0, 1);        
-    }
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_Position);
+
+    gl.drawArrays(gl.LINE_STRIP, 0, points.length);
 }

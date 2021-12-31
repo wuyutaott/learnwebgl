@@ -6,7 +6,7 @@ function main() {
     var gl = canvas.getContext('webgl');
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    var VS = "attribute vec4 a_Position;\n                void main() {\n                    gl_Position = a_Position;\n                }";
+    var VS = "attribute vec4 a_Position;\n                void main() {\n                    gl_Position = a_Position;\n                    gl_PointSize = 5.0;\n                }";
     var FS = "void main() {\n                    gl_FragColor = vec4(1, 0, 0, 1);\n                }";
     var vshader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vshader, VS);
@@ -26,16 +26,19 @@ function main() {
         var cy = ev.clientY - rect.y;
         var x = (cx - rect.width / 2) / (rect.width / 2);
         var y = (rect.height / 2 - cy) / (rect.height / 2);
-        points.push([x, y]);
+        points.push(x);
+        points.push(y);
         draw(points, gl, program);
     };
-    gl.drawArrays(gl.POINTS, 0, 1);
 }
 function draw(points, gl, program) {
     gl.clear(gl.COLOR_BUFFER_BIT);
+    var data = new Float32Array(points);
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
     var a_Position = gl.getAttribLocation(program, 'a_Position');
-    for (var i = 0; i < points.length; i++) {
-        var p = points[i];
-        gl.vertexAttrib3f(a_Position, p[0], p[1], 0);
-    }
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_Position);
+    gl.drawArrays(gl.LINE_STRIP, 0, points.length);
 }
