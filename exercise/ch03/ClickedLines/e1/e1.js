@@ -40,5 +40,5 @@ function draw(points, gl, program) {
     var a_Position = gl.getAttribLocation(program, 'a_Position');
     gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(a_Position);
-    gl.drawArrays(gl.LINE_STRIP, 0, points.length);
+    gl.drawArrays(gl.TRIANGLES, 0, points.length / 2);
 }

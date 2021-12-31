@@ -56,5 +56,5 @@ function draw(points: number[], gl: WebGLRenderingContext, program: WebGLProgram
     gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(a_Position);
 
-    gl.drawArrays(gl.LINE_STRIP, 0, points.length);
+    gl.drawArrays(gl.TRIANGLES, 0, points.length / 2);    
 }
