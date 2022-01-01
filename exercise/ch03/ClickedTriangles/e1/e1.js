@@ -33,5 +33,12 @@ function main() {
         var y = (rect.height / 2 - cy) / (rect.height / 2);
         points.push(x);
         points.push(y);
+        draw(points, gl);
     };
+}
+function draw(points, gl) {
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    var data = new Float32Array(points);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    gl.drawArrays(gl.TRIANGLES, 0, points.length / 2);
 }
