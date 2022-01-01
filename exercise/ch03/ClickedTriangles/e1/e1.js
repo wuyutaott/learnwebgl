@@ -4,7 +4,9 @@ function main() {
     canvas.height = 300;
     document.getElementsByTagName('body')[0].appendChild(canvas);
     var gl = canvas.getContext('webgl');
-    var VS = "attribute vec4 a_Position;\n                void main() {\n                    gl_Position = a_Position;\n                }";
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    var VS = "attribute vec4 a_Position;\n                void main() {\n                    gl_Position = a_Position;\n                    gl_PointSize = 5.0;\n                }";
     var FS = "void main() {\n                    gl_FragColor = vec4(1, 0, 0, 1);\n                }";
     var vshader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vshader, VS);
@@ -17,6 +19,19 @@ function main() {
     gl.attachShader(program, fshader);
     gl.linkProgram(program);
     gl.useProgram(program);
-    gl.clearColor(0, 0, 0, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    var a_Position = gl.getAttribLocation(program, 'a_Position');
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_Position);
+    var points = [];
+    canvas.onmousedown = function (ev) {
+        var rect = canvas.getBoundingClientRect();
+        var cx = ev.clientX - rect.x;
+        var cy = ev.clientY - rect.y;
+        var x = (cx - rect.width / 2) / (rect.width / 2);
+        var y = (rect.height / 2 - cy) / (rect.height / 2);
+        points.push(x);
+        points.push(y);
+    };
 }
