@@ -14,8 +14,8 @@ function main() {
                 void main() {
                     gl_Position.x = a_Position.x * u_CosB - a_Position.y * u_SinB;
                     gl_Position.y = a_Position.y * u_CosB + a_Position.x * u_SinB;
-                    gl_Position.z = 0;
-                    gl_Position.w = 1;
+                    gl_Position.z = 0.0;
+                    gl_Position.w = 1.0;
                 }`;
     const FS = `void main() {
                     gl_FragColor = vec4(1, 0, 0, 1);
@@ -23,9 +23,17 @@ function main() {
     let vshader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vshader, VS);
     gl.compileShader(vshader);
+    
+    if (!gl.getShaderParameter(vshader, gl.COMPILE_STATUS)) {
+        let errMsg = gl.getShaderInfoLog(vshader);
+        console.log(errMsg);
+    }
+    
+
     let fshader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fshader, FS);
     gl.compileShader(fshader);
+
     let program = gl.createProgram();
     gl.attachShader(program, vshader);
     gl.attachShader(program, fshader);
@@ -47,7 +55,8 @@ function main() {
     y2 = r * sin(a + b); => r * (sin(a)*cos(b)+cos(a)*sin(b)) => y1*cos(b)+x1*sin(b)
     */
 
-    let radian = Math.PI * 90 / 180;
+    let angle = 3;
+    let radian = Math.PI * angle / 180;
     let sinb = Math.sin(radian);
     let cosb = Math.cos(radian);
     let u_SinB = gl.getUniformLocation(program, 'u_SinB');
