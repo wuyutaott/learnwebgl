@@ -6,7 +6,7 @@ function main() {
     var gl = canvas.getContext('webgl');
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    var VS = "attribute vec4 a_Position;\n                void main() {\n                    gl_Position = a_Position;\n                }";
+    var VS = "attribute vec4 a_Position;\n                uniform float u_SinB;\n                uniform float u_CosB;\n                void main() {\n                    gl_Position.x = a_Position.x * u_CosB - a_Position.y * u_SinB;\n                    gl_Position.y = a_Position.y * u_CosB + a_Position.x * u_SinB;\n                    gl_Position.z = 0;\n                    gl_Position.w = 1;\n                }";
     var FS = "void main() {\n                    gl_FragColor = vec4(1, 0, 0, 1);\n                }";
     var vshader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vshader, VS);
@@ -26,5 +26,18 @@ function main() {
     gl.enableVertexAttribArray(a_Position);
     var data = new Float32Array([0, 0.5, -0.5, -0.5, 0.5, -0.5]);
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    /*
+    x1 = r * cos(a);
+    y1 = r * sin(a);
+    x2 = r * cos(a + b); => r * (cos(a)*cos(b)-sin(a)*sin(b)) => x1*cos(b)-y1*sin(b)
+    y2 = r * sin(a + b); => r * (sin(a)*cos(b)+cos(a)*sin(b)) => y1*cos(b)+x1*sin(b)
+    */
+    var radian = Math.PI * 90 / 180;
+    var sinb = Math.sin(radian);
+    var cosb = Math.cos(radian);
+    var u_SinB = gl.getUniformLocation(program, 'u_SinB');
+    gl.uniform1f(u_SinB, sinb);
+    var u_CosB = gl.getUniformLocation(program, 'u_CosB');
+    gl.uniform1f(u_CosB, cosb);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
