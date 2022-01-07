@@ -1,8 +1,4 @@
-var Helper = function() {
-
-}
-
-Helper.prototype.init = function() {
+var Helper = function(vs, fs) {
     const canvas = document.createElement('canvas');
     canvas.width = 300;
     canvas.height = 300;
@@ -11,11 +7,7 @@ Helper.prototype.init = function() {
     const gl = canvas.getContext('webgl');
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    this.gl = gl;    
-}
 
-Helper.prototype.createShader = function(vs, fs) {
-    const gl = this.gl;
     var vshader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vshader, vs);
     gl.compileShader(vshader);
@@ -27,5 +19,19 @@ Helper.prototype.createShader = function(vs, fs) {
     gl.attachShader(program, fshader);
     gl.linkProgram(program);
     gl.useProgram(program);
+
+    this.gl = gl;
     this.program = program;
+}
+
+Helper.prototype.createBuf = function(name, data) {
+    gl = this.gl;
+    program = this.program;
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    var a_name = gl.getAttribLocation(program, name);
+    gl.vertexAttribPointer(a_name, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_name);    
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
 }
