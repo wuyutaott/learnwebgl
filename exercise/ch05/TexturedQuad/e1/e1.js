@@ -35,10 +35,10 @@ function main() {
 
     const B = Float32Array.BYTES_PER_ELEMENT;
     const data = new Float32Array([
-        -0.5, 0.5, 0.0, 1.0,
-        -0.5, -0.5, 0.0, 0.0,
-        0.5, 0.5, 1.0, 1.0,
-        0.5, -0.5, 1.0, 0.0,
+        -0.5, 0.5, 0, 1,
+        -0.5, -0.5, 0, 0,
+        0.5, 0.5, 1, 1,
+        0.5, -0.5, 1, 0,
     ])
     var buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -52,21 +52,21 @@ function main() {
     gl.vertexAttribPointer(a_TexCoord, 2, gl.FLOAT, false, 4*B, 2*B);
     gl.enableVertexAttribArray(a_TexCoord);
 
-    var u_Sampler = gl.getUniformLocation(program, 'u_Sampler');
-    gl.uniform1i(u_Sampler, 0);
-
     var image = new Image();
     image.onload = () => {              
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-        gl.activeTexture(gl.TEXTURE0);
+        gl.activeTexture(gl.TEXTURE2);
         
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
 
+        var u_Sampler = gl.getUniformLocation(program, 'u_Sampler');
+        gl.uniform1i(u_Sampler, 2);        
+
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
-    image.src = './sky.jpg';
+    image.src = 'sky.jpg';    
 }
