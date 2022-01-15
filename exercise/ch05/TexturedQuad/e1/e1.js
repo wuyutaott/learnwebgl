@@ -54,16 +54,16 @@ function main() {
 
     var image = new Image();
     image.onload = () => {              
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
         gl.activeTexture(gl.TEXTURE2);
+        var u_Sampler = gl.getUniformLocation(program, 'u_Sampler');
+        gl.uniform1i(u_Sampler, 2);  
+        
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
         
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-
-        var u_Sampler = gl.getUniformLocation(program, 'u_Sampler');
-        gl.uniform1i(u_Sampler, 2);        
 
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
