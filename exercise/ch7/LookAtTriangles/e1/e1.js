@@ -1,7 +1,7 @@
 function main() {
     const canvas = document.createElement('canvas');
-    canvas.width = 500;
-    canvas.height = 500;
+    canvas.width = 400;
+    canvas.height = 400;
     document.getElementsByTagName('body')[0].appendChild(canvas);
 
     const gl = canvas.getContext('webgl');
@@ -35,16 +35,17 @@ function main() {
 
     const B = Float32Array.BYTES_PER_ELEMENT;
     const data = new Float32Array([
-        // 0,      0.5,    -0.4,      1,  0,  0,
-        // -0.5,   -0.5,   -0.4,      0,  1,  0,
-        // 0.5,    -0.5,   -0.4,      0,  1,  0,
-        // -0.5,   0.5,    -0.2,   0,  1,  0,
-        // 0.5,    0.5,    -0.2,   0,  1,  0,
-        // 0,      -0.5,   -0.2,   0,  0,  1,
-
         0.0,  0.5,  -0.4,  0.4,  1.0,  0.4, // The back green one
         -0.5, -0.5,  -0.4,  0.4,  1.0,  0.4,
          0.5, -0.5,  -0.4,  1.0,  0.4,  0.4, 
+       
+         0.5,  0.4,  -0.2,  1.0,  0.4,  0.4, // The middle yellow one
+        -0.5,  0.4,  -0.2,  1.0,  1.0,  0.4,
+         0.0, -0.6,  -0.2,  1.0,  1.0,  0.4, 
+    
+         0.0,  0.5,   0.0,  0.4,  0.4,  1.0,  // The front blue one 
+        -0.5, -0.5,   0.0,  0.4,  0.4,  1.0,
+         0.5, -0.5,   0.0,  1.0,  0.4,  0.4, 
     ])
     var buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -58,11 +59,10 @@ function main() {
     gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, 6*B, 3*B);
     gl.enableVertexAttribArray(a_Color);
 
-    var mat4 = new Matrix4();
-    // mat4.setLookAt(0.1, 0.1, 0.25, 0, 0, 0, 0, 1, 0);
+    var mat4 = new Matrix4();    
     mat4.setLookAt(0.20, 0.25, 0.25, 0, 0, 0, 0, 1, 0);
     var u_LookAt = gl.getUniformLocation(program, 'u_LookAt');
     gl.uniformMatrix4fv(u_LookAt, false, mat4.elements);
 
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.drawArrays(gl.TRIANGLES, 0, 9);
 }
